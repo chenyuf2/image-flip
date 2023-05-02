@@ -59,7 +59,7 @@ class ImageShaderMaterial extends ShaderMaterial {
               distanceToLine = 0.;
               gl_Position = projectionMatrix * modelViewMatrix * vec4(position.xy, 0., 1.);
             } else {
-              distanceToLine = getPerpendicularDistanceBetweenPointAndLine(position.xy, line) / maxDistance;
+              distanceToLine = getPerpendicularDistanceBetweenPointAndLine(position.xy, line) / (0.58 * 3.1415926);
               gl_Position = projectionMatrix * modelViewMatrix * vec4(meshPointMapToCylinderPos(position.xy, radiusV, line), 1.0);
             }
             vUv = uv;
@@ -76,7 +76,8 @@ class ImageShaderMaterial extends ShaderMaterial {
             if (gl_FrontFacing) {
                 gl_FragColor = mix(tex2d,mix(tex2d,vec4(0., 0., 0., 1.),.5),progress * distanceToLine);
             } else {
-                gl_FragColor = mix(tex2d, vec4(mix(vec3(9.,20.,33.)/255.,vec3(0.78), progressBack * distanceToLine),0.9), 0.9);
+                gl_FragColor = mix(tex2d, vec4(mix(vec4(9.,20.,33.,255.)/255.,vec4(vec3(0.78), 0.95), progressBack * distanceToLine)), 0.85);
+                // gl_FragColor = vec4(1., 1., 1., 0.3);
             }
            
         }
