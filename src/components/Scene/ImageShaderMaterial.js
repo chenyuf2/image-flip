@@ -10,6 +10,8 @@ class ImageShaderMaterial extends ShaderMaterial {
         uniform float xOffsetV;
         uniform float radiusV;
         uniform float alpha;
+        uniform float maxDistance;
+        varying float distanceToLine;
 
         // 点到直线垂足坐标
         vec2 getPerpendicularPointGivenPointAndLine(vec2 point, vec3 line) {
@@ -47,17 +49,18 @@ class ImageShaderMaterial extends ShaderMaterial {
           float posX = point.x;
           float posY = point.y;
           float val = line.x * posX + line.y * posY + line.z;
-          return val <= 0.0;
+          return val > 0.0;
         }
 
         void main() {
             vec3 line = vec3(-sin(alpha), cos(alpha), xOffsetV * sin(alpha));
             vec4 point = modelMatrix * vec4(position,1.);
-            if (isPointEffective(position.xy, line)) {
+            if (!isPointEffective(position.xy, line)) {
+              distanceToLine = 0.;
               gl_Position = projectionMatrix * modelViewMatrix * vec4(position.xy, 0., 1.);
             } else {
+              distanceToLine = getPerpendicularDistanceBetweenPointAndLine(position.xy, line) / maxDistance;
               gl_Position = projectionMatrix * modelViewMatrix * vec4(meshPointMapToCylinderPos(position.xy, radiusV, line), 1.0);
-            //   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
             }
             vUv = uv;
         }
@@ -65,12 +68,15 @@ class ImageShaderMaterial extends ShaderMaterial {
       fragmentShader: `
         varying vec2 vUv;
         uniform sampler2D imgTexture;
+        varying float distanceToLine;
+        uniform float progress;
+        uniform float progressBack;
         void main() {
             vec4 tex2d = texture2D(imgTexture, vUv);
             if (gl_FrontFacing) {
-                gl_FragColor = tex2d;
+                gl_FragColor = mix(tex2d,mix(tex2d,vec4(0., 0., 0., 1.),.5),progress * distanceToLine);
             } else {
-                gl_FragColor = vec4(1.,1.,1.,0.8);
+                gl_FragColor = mix(tex2d, vec4(mix(vec3(9.,20.,33.)/255.,vec3(0.78), progressBack * distanceToLine),0.9), 0.9);
             }
            
         }
@@ -91,6 +97,15 @@ class ImageShaderMaterial extends ShaderMaterial {
         },
         alpha: {
           value: Math.PI / 2,
+        },
+        progress: {
+          value: 0,
+        },
+        progressBack: {
+          value: 0,
+        },
+        maxDistance: {
+          value: 1,
         },
       },
     });
@@ -134,6 +149,30 @@ class ImageShaderMaterial extends ShaderMaterial {
 
   set alpha(value) {
     this.uniforms.alpha.value = value;
+  }
+
+  get progress() {
+    return this.uniforms.progress.value;
+  }
+
+  set progress(value) {
+    this.uniforms.progress.value = value;
+  }
+
+  get progressBack() {
+    return this.uniforms.progressBack.value;
+  }
+
+  set progressBack(value) {
+    this.uniforms.progressBack.value = value;
+  }
+
+  get maxDistance() {
+    return this.uniforms.maxDistance.value;
+  }
+
+  set maxDistance(value) {
+    this.uniforms.maxDistance.value = value;
   }
 }
 

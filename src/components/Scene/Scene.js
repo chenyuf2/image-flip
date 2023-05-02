@@ -9,9 +9,10 @@ const imageWidth = 3.2;
 const LERP_PARAMS = {
   cylinderIn: 0.25,
   cylinderOut: 0.0018,
-  alpha: 0.08,
-  shadowIn: 0.06,
-  shadowOut: 0.12,
+  alpha: 0.12,
+  shadowIn: 0.035,
+  shadowInBack: 0.25,
+  shadowOut: 0.15,
 };
 const xOffsetV = -0.6;
 
@@ -22,6 +23,8 @@ const Scene = () => {
   const pageStateRef = useRef({
     radius: 100,
     alpha: Math.PI / 2,
+    progress: 0,
+    progressBack: 0,
   });
 
   const CYLINDER_RADIUS_MAX = 100;
@@ -58,6 +61,11 @@ const Scene = () => {
         d = Math.abs(A * x0 + B * y0 + C) / Math.sqrt(A ** 2 + B ** 2);
       }
 
+      meshRef.current.material.uniforms.maxDistance.value = Math.max(
+        d,
+        0.4 * Math.PI
+      );
+
       pageStateRef.current.radius = lerp(
         pageStateRef.current.radius,
         Math.max(d / Math.PI, 0.4),
@@ -67,6 +75,11 @@ const Scene = () => {
         pageStateRef.current.progress,
         1,
         LERP_PARAMS.shadowIn
+      );
+      pageStateRef.current.progressBack = lerp(
+        pageStateRef.current.progressBack,
+        1,
+        LERP_PARAMS.shadowInBack
       );
     } else {
       pageStateRef.current.radius = lerp(
@@ -78,6 +91,11 @@ const Scene = () => {
         pageStateRef.current.progress,
         0,
         LERP_PARAMS.shadowOut
+      );
+      pageStateRef.current.progressBack = lerp(
+        pageStateRef.current.progressBack,
+        0,
+        LERP_PARAMS.cylinderIn
       );
     }
 
@@ -91,6 +109,10 @@ const Scene = () => {
     meshRef.current.material.uniforms.alpha.value = pageStateRef.current.alpha;
     meshRef.current.material.uniforms.radiusV.value =
       pageStateRef.current.radius;
+    meshRef.current.material.uniforms.progress.value =
+      pageStateRef.current.progress;
+    meshRef.current.material.uniforms.progressBack.value =
+      pageStateRef.current.progressBack;
   });
   return (
     <mesh ref={meshRef}>
@@ -100,6 +122,9 @@ const Scene = () => {
         radiusV={0.4}
         alpha={Math.PI / 2}
         xOffsetV={xOffsetV}
+        progress={0}
+        maxDistance={1}
+        progressBack={0}
       />
     </mesh>
   );

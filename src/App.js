@@ -7,7 +7,7 @@ const App = () => {
       dpr={Math.max(window.devicePixelRatio, 2)}
       camera={{ position: [0, 0, 15], fov: 30 }} // previous, it has too strong perspective camera
     >
-      <color args={["#e2e2df"]} attach="background" />
+      <color args={["#122943"]} attach="background" />
       <Scene />
     </Canvas>
   );
