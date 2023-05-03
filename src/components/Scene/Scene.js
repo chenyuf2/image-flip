@@ -1,22 +1,17 @@
 import { useTexture } from "@react-three/drei";
-// import poster from "images/poster.jpg";
-// import poster from "images/poster2.webp";
-import poster from "images/poster3.jpg";
+import poster from "images/poster.jpg";
 import "./ImageShaderMaterial";
 import { useFrame, useThree } from "@react-three/fiber";
 import { lerp } from "three/src/math/MathUtils";
 import { useRef } from "react";
-// const imageHeight = 4;
-// const imageWidth = 3.2;
-// const imageHeight = 1364 / 300;
-// const imageWidth = 912 / 300;
+
 const imageHeight = 2715 / 600;
 const imageWidth = 1920 / 600;
 const LERP_PARAMS = {
-  cylinderIn: 0.25,
+  cylinderIn: 0.24,
   cylinderOut: 0.0018,
   alpha: 0.12,
-  shadowIn: 0.035,
+  shadowIn: 0.03,
   shadowInBack: 0.25,
   shadowOut: 0.15,
 };
@@ -132,25 +127,3 @@ const Scene = () => {
 };
 
 export default Scene;
-
-// precision highp float;
-// varying vec2 c;
-// varying vec2 d;
-// varying float e;
-// uniform sampler2D az;
-// uniform float q;
-// uniform float m;
-// void main(){
-//   vec4 ah=texture2D(az,c);
-//   float ai=1.;
-//   if(q!=0.){
-//     float aj=distance(d/q,vec2(0.));
-//     ai=step(d.y,.5)*step(d.x/q,.5)*step(-.5,d.x/q)+smoothstep(.5,.5-fwidth(aj),aj);
-//   }
-//   vec4 ak=vec4(ah.rgb,ai*ah.a);
-//   if(gl_FrontFacing){
-//     ak=mix(ak,vec4(mix(vec3(1),mix(vec3(1),vec3(9.,20.,33.)/255.,.45),abs(e)),1),.92);
-//   } else{
-//     ak=mix(ak,mix(ak,vec4(vec3(0.),1),.5),abs(e));
-//   }
-//   gl_FragColor=vec4(ak.rgb,ak.a*m);}`, s.FRAGMENT_SHADER)

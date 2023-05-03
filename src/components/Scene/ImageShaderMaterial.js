@@ -71,11 +71,11 @@ class ImageShaderMaterial extends ShaderMaterial {
         uniform float progress;
         uniform float progressBack;
         void main() {
-            vec4 tex2d = texture2D(imgTexture, vUv);
-            if (gl_FrontFacing) {
-                gl_FragColor = mix(tex2d,mix(tex2d,vec4(0., 0., 0., 1.),.55),progress * distanceToLine);
-            } else {
-                gl_FragColor = mix(tex2d, vec4(mix(vec4(9.,20.,33.,255.)/255.,vec4(vec3(0.78), 0.95), progressBack * distanceToLine)), 0.85);
+            vec4 tex2d=texture2D(imgTexture,vUv);
+            if(gl_FrontFacing){
+              gl_FragColor=mix(tex2d,mix(tex2d,vec4(vec3(0.),1),.5),sin(progressBack * distanceToLine));
+            } else{
+              gl_FragColor=mix(tex2d,vec4(mix(vec3(1),mix(vec3(1),vec3(9.,20.,33.)/255.,.45),cos(progressBack * distanceToLine)),1.),.92);
             }
            
         }

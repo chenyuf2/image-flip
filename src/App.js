@@ -1,6 +1,7 @@
 import "./App.scss";
 import { Canvas } from "@react-three/fiber";
 import Scene from "components/Scene/Scene";
+import { OrbitControls } from "@react-three/drei";
 const App = () => {
   return (
     <Canvas
@@ -11,6 +12,7 @@ const App = () => {
     >
       <color args={["#122943"]} attach="background" />
       <Scene />
+      <OrbitControls />
     </Canvas>
   );
 };
