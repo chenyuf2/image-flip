@@ -10,7 +10,6 @@ class ImageShaderMaterial extends ShaderMaterial {
         uniform float xOffsetV;
         uniform float radiusV;
         uniform float alpha;
-        uniform float maxDistance;
         varying float distanceToLine;
 
         // 点到直线垂足坐标
@@ -74,10 +73,9 @@ class ImageShaderMaterial extends ShaderMaterial {
         void main() {
             vec4 tex2d = texture2D(imgTexture, vUv);
             if (gl_FrontFacing) {
-                gl_FragColor = mix(tex2d,mix(tex2d,vec4(0., 0., 0., 1.),.5),progress * distanceToLine);
+                gl_FragColor = mix(tex2d,mix(tex2d,vec4(0., 0., 0., 1.),.55),progress * distanceToLine);
             } else {
                 gl_FragColor = mix(tex2d, vec4(mix(vec4(9.,20.,33.,255.)/255.,vec4(vec3(0.78), 0.95), progressBack * distanceToLine)), 0.85);
-                // gl_FragColor = vec4(1., 1., 1., 0.3);
             }
            
         }
@@ -104,9 +102,6 @@ class ImageShaderMaterial extends ShaderMaterial {
         },
         progressBack: {
           value: 0,
-        },
-        maxDistance: {
-          value: 1,
         },
       },
     });
@@ -166,14 +161,6 @@ class ImageShaderMaterial extends ShaderMaterial {
 
   set progressBack(value) {
     this.uniforms.progressBack.value = value;
-  }
-
-  get maxDistance() {
-    return this.uniforms.maxDistance.value;
-  }
-
-  set maxDistance(value) {
-    this.uniforms.maxDistance.value = value;
   }
 }
 
