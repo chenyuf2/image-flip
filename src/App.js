@@ -1,7 +1,6 @@
 import "./App.scss";
 import { Canvas } from "@react-three/fiber";
 import Scene from "components/Scene/Scene";
-import { OrbitControls } from "@react-three/drei";
 import { useMediaQuery } from "react-responsive";
 import Mobile from "components/Mobile/Mobile";
 import Home from "components/Home/Home";
@@ -21,7 +20,6 @@ const App = () => {
           >
             <color args={["#122943"]} attach="background" />
             <Scene />
-            <OrbitControls />
           </Canvas>
         </>
       ) : (
