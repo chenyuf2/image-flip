@@ -1,23 +1,22 @@
 import { useTexture } from "@react-three/drei";
-// import poster from "images/poster.jpg";
-import poster from "images/poster2.webp";
+import poster from "images/poster.jpg";
 import "./ImageShaderMaterial";
 import { useFrame, useThree } from "@react-three/fiber";
 import { lerp } from "three/src/math/MathUtils";
 import { useRef } from "react";
-// const imageHeight = 4;
-// const imageWidth = 3.2;
-const imageHeight = 1364 / 300;
-const imageWidth = 912 / 300;
+
+const imageHeight = 2715 / 600;
+const imageWidth = 1920 / 600;
 const LERP_PARAMS = {
-  cylinderIn: 0.25,
+  cylinderIn: 0.24,
   cylinderOut: 0.0018,
   alpha: 0.12,
-  shadowIn: 0.035,
+  shadowIn: 0.03,
   shadowInBack: 0.25,
   shadowOut: 0.15,
 };
 const xOffsetV = -0.6;
+const DEFAULT_RADIUS = 0.4;
 
 const Scene = () => {
   const [texture] = useTexture([poster]);
@@ -64,14 +63,9 @@ const Scene = () => {
         d = Math.abs(A * x0 + B * y0 + C) / Math.sqrt(A ** 2 + B ** 2);
       }
 
-      // meshRef.current.material.uniforms.maxDistance.value = Math.max(
-      //   d,
-      //   0.4 * Math.PI
-      // );
-
       pageStateRef.current.radius = lerp(
         pageStateRef.current.radius,
-        Math.max(d / Math.PI, 0.45),
+        Math.max(d / Math.PI, DEFAULT_RADIUS),
         LERP_PARAMS.cylinderIn
       );
       pageStateRef.current.progress = lerp(
@@ -122,11 +116,10 @@ const Scene = () => {
       <planeGeometry args={[imageWidth, imageHeight, 512, 512]} />
       <imageShaderMaterial
         imgTexture={texture}
-        radiusV={0.45}
+        radiusV={DEFAULT_RADIUS}
         alpha={Math.PI / 2}
         xOffsetV={xOffsetV}
         progress={0}
-        maxDistance={0.5 * Math.PI}
         progressBack={0}
       />
     </mesh>

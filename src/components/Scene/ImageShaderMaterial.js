@@ -10,7 +10,6 @@ class ImageShaderMaterial extends ShaderMaterial {
         uniform float xOffsetV;
         uniform float radiusV;
         uniform float alpha;
-        uniform float maxDistance;
         varying float distanceToLine;
 
         // 点到直线垂足坐标
@@ -59,7 +58,8 @@ class ImageShaderMaterial extends ShaderMaterial {
               distanceToLine = 0.;
               gl_Position = projectionMatrix * modelViewMatrix * vec4(position.xy, 0., 1.);
             } else {
-              distanceToLine = getPerpendicularDistanceBetweenPointAndLine(position.xy, line) / (0.58 * 3.1415926);
+              //0.58
+              distanceToLine = getPerpendicularDistanceBetweenPointAndLine(position.xy, line) / (radiusV * 2.2);
               gl_Position = projectionMatrix * modelViewMatrix * vec4(meshPointMapToCylinderPos(position.xy, radiusV, line), 1.0);
             }
             vUv = uv;
@@ -72,12 +72,11 @@ class ImageShaderMaterial extends ShaderMaterial {
         uniform float progress;
         uniform float progressBack;
         void main() {
-            vec4 tex2d = texture2D(imgTexture, vUv);
-            if (gl_FrontFacing) {
-                gl_FragColor = mix(tex2d,mix(tex2d,vec4(0., 0., 0., 1.),.5),progress * distanceToLine);
-            } else {
-                gl_FragColor = mix(tex2d, vec4(mix(vec4(9.,20.,33.,255.)/255.,vec4(vec3(0.78), 0.95), progressBack * distanceToLine)), 0.85);
-                // gl_FragColor = vec4(1., 1., 1., 0.3);
+            vec4 tex2d=texture2D(imgTexture,vUv);
+            if(gl_FrontFacing){
+              gl_FragColor=mix(tex2d,mix(tex2d,vec4(vec3(0.),1),.5),sin(progressBack * distanceToLine));
+            } else{
+              gl_FragColor=mix(tex2d,vec4(mix(vec3(1),mix(vec3(1),vec3(9.,20.,33.)/255.,.45), cos(progressBack * distanceToLine)),1.),.87);
             }
            
         }
@@ -104,9 +103,6 @@ class ImageShaderMaterial extends ShaderMaterial {
         },
         progressBack: {
           value: 0,
-        },
-        maxDistance: {
-          value: 1,
         },
       },
     });
@@ -166,14 +162,6 @@ class ImageShaderMaterial extends ShaderMaterial {
 
   set progressBack(value) {
     this.uniforms.progressBack.value = value;
-  }
-
-  get maxDistance() {
-    return this.uniforms.maxDistance.value;
-  }
-
-  set maxDistance(value) {
-    this.uniforms.maxDistance.value = value;
   }
 }
 
